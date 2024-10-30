@@ -22,8 +22,8 @@ const HotelInformation = () => {
           <p className='font-medium py-1'>This vendor process is intended for managed hotels only. Please check this box to confirm you're at a managed hotel</p>
           <div className='flex gap-8 py-1 font-medium'>
             <p>Is the Hotel</p>
-            <p className='flex items-center'><span>Managed</span><input type='checkbox' className='ml-5' /></p>
-            <p className='flex items-center'>Franchise<input type='checkbox' className='ml-5' /></p>
+            <p className='flex items-center'><span>Managed</span><input className='relative top-[2px] h-4 w-5 ml-5' type='checkbox' /></p>
+            <p className='flex items-center'>Franchise<input className='relative top-[2px] h-4 w-5 ml-5' type='checkbox'  /></p>
           </div>
         </section>
 

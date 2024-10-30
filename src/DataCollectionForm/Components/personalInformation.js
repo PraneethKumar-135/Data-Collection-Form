@@ -1,6 +1,36 @@
 import React, { useState } from 'react';
+import { getCountries, getCountryCallingCode } from 'react-phone-number-input/input';
+import en from 'react-phone-number-input/locale/en';
+import PropTypes from 'prop-types';
+import { updatePersonalInformation } from '../../Redux/Slice/PersonalInfoSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
+const CountrySelect = ({ onChange, labels, ...rest }) => (
+  <select
+    {...rest}
+    className='border h-9 rounded-lg'
+    onChange={(event) => {
+      const selectedCountry = event.target.value || undefined;
+      const callingCode = selectedCountry ? getCountryCallingCode(selectedCountry) : '';
+      onChange(callingCode);
+    }}
+  >
+    <option value="">{labels['ZZ']}</option>
+    {getCountries().map((country) => (
+      <option key={country} value={country}>
+        {labels[country]} +{getCountryCallingCode(country)}
+      </option>
+    ))}
+  </select>
+);
+
+CountrySelect.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  labels: PropTypes.objectOf(PropTypes.string).isRequired,
+};
 
 const PersonalInformation = () => {
+  const dispatch = useDispatch()
   const [Personaldata, setPersonalData] = useState({
     FirstName: "",
     LastName: "",
@@ -17,9 +47,17 @@ const PersonalInformation = () => {
       ...prevData,
       [name]: value,
     }));
+    dispatch(updatePersonalInformation([Personaldata]))
   };
-  console.log(Personaldata);
-  
+
+  const handleCountryCodeChange = (callingCode) => {
+    setPersonalData((prevData) => ({
+      ...prevData,
+      CountryCode: callingCode,
+    }));
+  };
+  const SliceData = useSelector((state) => state.personalInformation.PersonalInfoData)
+  console.log("SliceData",SliceData);
 
   return (
     <div className='flex flex-col gap-5'>
@@ -100,14 +138,10 @@ const PersonalInformation = () => {
         <section className='flex gap-5 py-2'>
           <aside className='flex flex-col w-[15%]'>
             <label className="font-medium pb-1">Country Code <span className='text-red-600 ml-1'>*</span></label>
-            <select
-              name="CountryCode"
-              value={Personaldata.CountryCode}
-              onChange={handlePersonalData}
-              className='border h-9 rounded-lg'
-            >
-              {/* Add your options here */}
-            </select>
+            <CountrySelect
+              labels={en}
+              onChange={handleCountryCodeChange}
+            />
           </aside>
           <aside className='flex flex-col w-[85%]'>
             <label className="font-medium pb-1">Phone <span className='text-red-600 ml-1'>*</span></label>
